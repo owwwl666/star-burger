@@ -26,7 +26,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'debug_toolbar',
     'phonenumber_field',
-    'adminsortable2'
+    'rest_framework'
 ]
 
 MIDDLEWARE = [

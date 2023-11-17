@@ -2,8 +2,12 @@ import json
 
 from django.http import JsonResponse
 from django.templatetags.static import static
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
-from .models import Product, Order
+from .models import ProductOrder
+from .models import Product
+from .models import Order
 
 
 def banners_list_api(request):
@@ -58,17 +62,28 @@ def product_list_api(request):
     })
 
 
+@api_view(['POST'])
 def register_order(request):
-    serialize_order = json.loads(request.body.decode())
+    serialize_order = request.data
+    print(serialize_order)
+
     products = serialize_order.get('products')
-    products_on_order = Product.objects.select_related('category').filter(
-        pk__in=[product.get('product') for product in products])
+
     order, _ = Order.objects.get_or_create(
         firstname=serialize_order.get('firstname'),
         lastname=serialize_order.get('lastname'),
         phonenumber=serialize_order.get('phonenumber'),
         address=serialize_order.get('address'),
     )
-    order.products.set(products_on_order)
-    order.save()
-    return JsonResponse({})
+
+    for product in products:
+        product_id = product.get('product')
+        product_quantity = product.get('quantity')
+
+        order_product, _ = ProductOrder.objects.get_or_create(
+            order=order,
+            product=Product.objects.select_related('category').get(pk=product_id),
+            quantity=product_quantity
+        )
+
+    return Response(serialize_order)
