@@ -142,14 +142,36 @@ class Order(models.Model):
         max_length=200,
         verbose_name='Адрес доставки'
     )
-    products = models.ManyToManyField('Product',
-                                      related_name='orders',
-                                      verbose_name='Продукты'
-                                      )
 
     class Meta:
         verbose_name = 'Заказ'
         verbose_name_plural = 'Заказы'
 
     def __str__(self):
-        return f"{self.firstname} {self.lastname}"
+        return f"{self.firstname} {self.lastname} {self.address}"
+
+
+class ProductOrder(models.Model):
+    order = models.ForeignKey(
+        'Order',
+        on_delete=models.CASCADE,
+        related_name='products',
+        verbose_name='Заказ'
+    )
+    product = models.ForeignKey(
+        'Product',
+        on_delete=models.CASCADE,
+        related_name='orders',
+        verbose_name='Товар'
+    )
+    quantity = models.PositiveIntegerField(
+        verbose_name='Количество',
+        db_index=True
+    )
+
+    class Meta:
+        verbose_name = 'Товар в заказе'
+        verbose_name_plural = 'Товары в заказе'
+
+    def __str__(self):
+        return f"{self.product.name}"
