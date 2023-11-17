@@ -65,7 +65,6 @@ def product_list_api(request):
 @api_view(['POST'])
 def register_order(request):
     serialize_order = request.data
-    print(serialize_order)
 
     products = serialize_order.get('products')
 
