@@ -3,8 +3,11 @@ from django.templatetags.static import static
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+import phonenumbers
+
 from .models import Product
 from .services import add_product_to_order
+from .services import checks_product_availability
 from .services import create_order_in_db
 
 
@@ -70,19 +73,38 @@ def register_order(request):
     phonenumber = serialize_order.get('phonenumber')
     address = serialize_order.get('address')
 
-    match products:
-        case list() if products != []:
-            order = create_order_in_db(
-                firstname=firstname,
-                lastname=lastname,
-                phonenumber=phonenumber,
-                address=address
-            )
+    order_information = [products, firstname, lastname, phonenumber, address]
+
+    match order_information:
+        case [list(products), str(firstname), str(lastname), str(phonenumber),
+              str(address)] if products != [] and '' not in order_information:
+
+            phonenumber_valid = phonenumbers.is_valid_number(phonenumbers.parse(phonenumber, "RU"))
+
+            if phonenumber_valid:
+                order = create_order_in_db(
+                    firstname=firstname,
+                    lastname=lastname,
+                    phonenumber=phonenumber,
+                    address=address
+                )
+            else:
+                content = {
+                    'error': 'phonenumber: The entered telephone number is incorrect.'
+                }
+                return Response(content)
 
             for product in products:
                 product_id = product.get('product')
                 product_quantity = product.get('quantity')
 
+                try:
+                    checks_product_availability(product_id=product_id)
+                except Product.DoesNotExist:
+                    content = {
+                        'error': 'products: Invalid primary key.'
+                    }
+                    return Response(content)
                 add_product_to_order(
                     order=order,
                     product_id=product_id,
@@ -90,18 +112,43 @@ def register_order(request):
                 )
 
             return Response(serialize_order)
-        case None:
+        case [None as products, *_]:
             content = {
                 'error': 'products: Required field.'
             }
             return Response(content)
-        case []:
+        case [_, None as firstname, None as lastname, None as phonenumber, None as address]:
+            content = {
+                'error': 'firstname, lastname, phonenumber, address: Required field.'
+            }
+            return Response(content)
+        case [[] as products, *_]:
             content = {
                 'error': 'products: This list cannot be empty.'
             }
             return Response(content)
-        case str():
+        case [str() as products, *_]:
             content = {
                 'error': 'products: Expected list with values, but received "str".'
+            }
+            return Response(content)
+        case [_, '' as firstname, *_]:
+            content = {
+                'error': 'firstname: This field cannot be empty.'
+            }
+            return Response(content)
+        case [_, '' as firstname, "" as lastname, "" as phonenumber, "" as address]:
+            content = {
+                'error': 'firstname, lastname, phonenumber, address: This field cannot be empty.'
+            }
+            return Response(content)
+        case [*_, '' as phonenumber, _]:
+            content = {
+                'error': 'phonenumber: This field cannot be empty.'
+            }
+            return Response(content)
+        case [_, [] as firstname, *_]:
+            content = {
+                'error': 'firstname: Not a valid string.'
             }
             return Response(content)

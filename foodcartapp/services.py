@@ -23,3 +23,7 @@ def add_product_to_order(order, product_id, product_quantity):
     )
 
     return order_product
+
+
+def checks_product_availability(product_id):
+    return Product.objects.get(pk=product_id)
