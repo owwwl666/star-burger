@@ -1,13 +1,11 @@
-import json
-
 from django.http import JsonResponse
 from django.templatetags.static import static
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from .models import ProductOrder
 from .models import Product
-from .models import Order
+from .services import add_product_to_order
+from .services import create_order_in_db
 
 
 def banners_list_api(request):
@@ -67,22 +65,43 @@ def register_order(request):
     serialize_order = request.data
 
     products = serialize_order.get('products')
+    firstname = serialize_order.get('firstname')
+    lastname = serialize_order.get('lastname')
+    phonenumber = serialize_order.get('phonenumber')
+    address = serialize_order.get('address')
 
-    order, _ = Order.objects.get_or_create(
-        firstname=serialize_order.get('firstname'),
-        lastname=serialize_order.get('lastname'),
-        phonenumber=serialize_order.get('phonenumber'),
-        address=serialize_order.get('address'),
-    )
+    match products:
+        case list() if products != []:
+            order = create_order_in_db(
+                firstname=firstname,
+                lastname=lastname,
+                phonenumber=phonenumber,
+                address=address
+            )
 
-    for product in products:
-        product_id = product.get('product')
-        product_quantity = product.get('quantity')
+            for product in products:
+                product_id = product.get('product')
+                product_quantity = product.get('quantity')
 
-        order_product, _ = ProductOrder.objects.get_or_create(
-            order=order,
-            product=Product.objects.select_related('category').get(pk=product_id),
-            quantity=product_quantity
-        )
+                add_product_to_order(
+                    order=order,
+                    product_id=product_id,
+                    product_quantity=product_quantity
+                )
 
-    return Response(serialize_order)
+            return Response(serialize_order)
+        case None:
+            content = {
+                'error': 'products: Required field.'
+            }
+            return Response(content)
+        case []:
+            content = {
+                'error': 'products: This list cannot be empty.'
+            }
+            return Response(content)
+        case str():
+            content = {
+                'error': 'products: Expected list with values, but received "str".'
+            }
+            return Response(content)
