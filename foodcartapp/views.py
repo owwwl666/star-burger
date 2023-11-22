@@ -6,8 +6,9 @@ from rest_framework.response import Response
 import phonenumbers
 
 from .models import Product
+from .models import ProductOrder
+from .serializer import OrderSerializer
 from .services import add_product_to_order
-from .services import checks_product_availability
 from .services import create_order_in_db
 
 
@@ -65,90 +66,28 @@ def product_list_api(request):
 
 @api_view(['POST'])
 def register_order(request):
-    serialize_order = request.data
+    validate_order = OrderSerializer(data=request.data)
+    validate_order.is_valid(raise_exception=True)
 
-    products = serialize_order.get('products')
-    firstname = serialize_order.get('firstname')
-    lastname = serialize_order.get('lastname')
-    phonenumber = serialize_order.get('phonenumber')
-    address = serialize_order.get('address')
+    products = validate_order.validated_data.get('products')
+    firstname = validate_order.validated_data.get('firstname')
+    lastname = validate_order.validated_data.get('lastname')
+    phonenumber = validate_order.validated_data.get('phonenumber')
+    address = validate_order.validated_data.get('address')
 
-    order_information = [products, firstname, lastname, phonenumber, address]
+    print(validate_order.validated_data)
 
-    match order_information:
-        case [list(products), str(firstname), str(lastname), str(phonenumber),
-              str(address)] if products != [] and '' not in order_information:
+    order = create_order_in_db(
+        firstname=firstname,
+        lastname=lastname,
+        phonenumber=phonenumber,
+        address=address
+    )
 
-            phonenumber_valid = phonenumbers.is_valid_number(phonenumbers.parse(phonenumber, "RU"))
+    for product in products:
+        add_product_to_order(
+            order=order,
+            **product
+        )
 
-            if phonenumber_valid:
-                order = create_order_in_db(
-                    firstname=firstname,
-                    lastname=lastname,
-                    phonenumber=phonenumber,
-                    address=address
-                )
-            else:
-                content = {
-                    'error': 'phonenumber: The entered telephone number is incorrect.'
-                }
-                return Response(content)
-
-            for product in products:
-                product_id = product.get('product')
-                product_quantity = product.get('quantity')
-
-                try:
-                    checks_product_availability(product_id=product_id)
-                except Product.DoesNotExist:
-                    content = {
-                        'error': 'products: Invalid primary key.'
-                    }
-                    return Response(content)
-                add_product_to_order(
-                    order=order,
-                    product_id=product_id,
-                    product_quantity=product_quantity
-                )
-
-            return Response(serialize_order)
-        case [None as products, *_]:
-            content = {
-                'error': 'products: Required field.'
-            }
-            return Response(content)
-        case [_, None as firstname, None as lastname, None as phonenumber, None as address]:
-            content = {
-                'error': 'firstname, lastname, phonenumber, address: Required field.'
-            }
-            return Response(content)
-        case [[] as products, *_]:
-            content = {
-                'error': 'products: This list cannot be empty.'
-            }
-            return Response(content)
-        case [str() as products, *_]:
-            content = {
-                'error': 'products: Expected list with values, but received "str".'
-            }
-            return Response(content)
-        case [_, '' as firstname, *_]:
-            content = {
-                'error': 'firstname: This field cannot be empty.'
-            }
-            return Response(content)
-        case [_, '' as firstname, "" as lastname, "" as phonenumber, "" as address]:
-            content = {
-                'error': 'firstname, lastname, phonenumber, address: This field cannot be empty.'
-            }
-            return Response(content)
-        case [*_, '' as phonenumber, _]:
-            content = {
-                'error': 'phonenumber: This field cannot be empty.'
-            }
-            return Response(content)
-        case [_, [] as firstname, *_]:
-            content = {
-                'error': 'firstname: Not a valid string.'
-            }
-            return Response(content)
+    return Response(request.data)
