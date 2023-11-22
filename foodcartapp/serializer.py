@@ -16,7 +16,8 @@ class ProductOrderSerializer(ModelSerializer):
 class OrderSerializer(ModelSerializer):
     products = ProductOrderSerializer(
         many=True,
-        allow_empty=False
+        allow_empty=False,
+        write_only=True
     )
 
     class Meta:

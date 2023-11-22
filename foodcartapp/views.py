@@ -1,6 +1,7 @@
 from django.http import JsonResponse
 from django.templatetags.static import static
 from rest_framework.decorators import api_view
+from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 
 import phonenumbers
@@ -66,16 +67,14 @@ def product_list_api(request):
 
 @api_view(['POST'])
 def register_order(request):
-    validate_order = OrderSerializer(data=request.data)
-    validate_order.is_valid(raise_exception=True)
+    valid_order = OrderSerializer(data=request.data)
+    valid_order.is_valid(raise_exception=True)
 
-    products = validate_order.validated_data.get('products')
-    firstname = validate_order.validated_data.get('firstname')
-    lastname = validate_order.validated_data.get('lastname')
-    phonenumber = validate_order.validated_data.get('phonenumber')
-    address = validate_order.validated_data.get('address')
-
-    print(validate_order.validated_data)
+    products = valid_order.validated_data.get('products')
+    firstname = valid_order.validated_data.get('firstname')
+    lastname = valid_order.validated_data.get('lastname')
+    phonenumber = valid_order.validated_data.get('phonenumber')
+    address = valid_order.validated_data.get('address')
 
     order = create_order_in_db(
         firstname=firstname,
@@ -84,10 +83,12 @@ def register_order(request):
         address=address
     )
 
+    serialize_order = OrderSerializer(order)
+
     for product in products:
         add_product_to_order(
             order=order,
             **product
         )
 
-    return Response(request.data)
+    return Response(serialize_order.data)
