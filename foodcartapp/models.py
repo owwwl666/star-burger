@@ -93,6 +93,8 @@ class Product(models.Model):
         blank=True,
     )
 
+    objects = ProductQuerySet.as_manager()
+
     class Meta:
         verbose_name = 'товар'
         verbose_name_plural = 'товары'
