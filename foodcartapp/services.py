@@ -1,5 +1,4 @@
 from .models import ProductOrder
-from .models import Product
 from .models import Order
 
 
@@ -15,7 +14,10 @@ def create_order_in_db(firstname, lastname, phonenumber, address):
 
 
 def add_product_to_order(order, **product):
-    ProductOrder.objects.create(
+    ordered_product = ProductOrder.objects.create(
         order=order,
         **product
     )
+
+    ordered_product.order_price = ordered_product.quantity * ordered_product.product.price
+    ordered_product.save()
