@@ -41,8 +41,7 @@ class ProductQuerySet(models.QuerySet):
 class OrderQuerySet(models.QuerySet):
     def calculate_final_price(self):
         return self.annotate(
-            final_price=Sum(F('ordered_products__price') *
-                            F('ordered_products__quantity'))
+            final_price=Sum(F('ordered_products__order_price'))
         )
 
 
@@ -180,7 +179,7 @@ class ProductOrder(models.Model):
         db_index=True
     )
 
-    price = models.DecimalField(
+    order_price = models.DecimalField(
         'Цена заказа',
         max_digits=8,
         decimal_places=2,
