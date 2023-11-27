@@ -1,13 +1,10 @@
+from django.db import transaction
 from django.http import JsonResponse
 from django.templatetags.static import static
 from rest_framework.decorators import api_view
-from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 
-import phonenumbers
-
 from .models import Product
-from .models import ProductOrder
 from .serializer import OrderSerializer
 from .services import add_product_to_order
 from .services import create_order_in_db
@@ -75,20 +72,20 @@ def register_order(request):
     lastname = valid_order.validated_data.get('lastname')
     phonenumber = valid_order.validated_data.get('phonenumber')
     address = valid_order.validated_data.get('address')
-
-    order = create_order_in_db(
-        firstname=firstname,
-        lastname=lastname,
-        phonenumber=phonenumber,
-        address=address
-    )
-
-    serialize_order = OrderSerializer(order)
-
-    for product in products:
-        add_product_to_order(
-            order=order,
-            **product
+    with transaction.atomic():
+        order = create_order_in_db(
+            firstname=firstname,
+            lastname=lastname,
+            phonenumber=phonenumber,
+            address=address
         )
 
-    return Response(serialize_order.data)
+        serialize_order = OrderSerializer(order)
+
+        for product in products:
+            add_product_to_order(
+                order=order,
+                **product
+            )
+
+        return Response(serialize_order.data)
