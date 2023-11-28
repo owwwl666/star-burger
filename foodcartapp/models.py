@@ -133,6 +133,18 @@ class RestaurantMenuItem(models.Model):
 
 
 class Order(models.Model):
+    RAW = 'raw'
+    ASSEMBLY = 'assembly'
+    COURIER = 'courier'
+    DELIVER = 'delivered'
+
+    ORDER_STATUS = [
+        (RAW, 'Необработанный'),
+        (ASSEMBLY, 'Сборка'),
+        (COURIER, 'Передан курьеру'),
+        (DELIVER, 'Доставлен')
+    ]
+
     firstname = models.CharField(
         max_length=200,
         verbose_name='Имя заказчика'
@@ -149,6 +161,14 @@ class Order(models.Model):
     address = models.CharField(
         max_length=200,
         verbose_name='Адрес доставки'
+    )
+
+    status = models.CharField(
+        max_length=30,
+        choices=ORDER_STATUS,
+        default=RAW,
+        verbose_name='Статус заказа',
+        db_index=True
     )
 
     objects = OrderQuerySet.as_manager()
