@@ -19,6 +19,7 @@
         <th>Телефон</th>
         <th>Адрес доставки</th>
         <th>Статус</th>
+        <th>Способ оплаты</th>
         <th>Редактировать</th>
       </tr>
 
@@ -30,6 +31,7 @@
           <td>{{ item.phonenumber }}</td>
           <td>{{ item.address }}</td>
           <td>{{ item.get_status_display }}</td>
+          <td>{{ item.get_payment_display }}</td>
           <td><a href="{% url "admin:foodcartapp_order_change" object_id=item.pk %}?next={{ url | urlencode }}">Редактировать</a>
           </td>
         </tr>

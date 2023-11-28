@@ -139,11 +139,19 @@ class Order(models.Model):
     COURIER = 'courier'
     DELIVER = 'delivered'
 
+    CASH = 'cash'
+    NON_CASH = 'non-cash'
+
     ORDER_STATUS = [
         (RAW, 'Необработанный'),
         (ASSEMBLY, 'Сборка'),
         (COURIER, 'Передан курьеру'),
         (DELIVER, 'Доставлен')
+    ]
+
+    PAYMENT_METHOD = [
+        (CASH, 'Наличностью'),
+        (NON_CASH, 'Электронно'),
     ]
 
     firstname = models.CharField(
@@ -189,6 +197,16 @@ class Order(models.Model):
         choices=ORDER_STATUS,
         default=RAW,
         verbose_name='Статус заказа',
+        db_index=True
+    )
+
+    payment = models.CharField(
+        max_length=30,
+        null=True,
+        blank=True,
+        choices=PAYMENT_METHOD,
+        default=CASH,
+        verbose_name='Способ оплаты',
         db_index=True
     )
 
