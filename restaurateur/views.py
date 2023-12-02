@@ -92,12 +92,46 @@ def view_restaurants(request):
 
 @user_passes_test(is_manager, login_url='restaurateur:login')
 def view_orders(request):
-    orders = Order.objects.calculate_final_price()
+    orders = Order.objects. \
+        calculate_final_price(). \
+        exclude(status='delivered')
+
+    restaurants = Restaurant.objects.all()
+
+    products_in_restaurant = {restaurant: set(restaurant.menu_items.values_list('product', flat=True)) for restaurant in
+                              restaurants}
+
+    order_details = []
+
+    for order in orders:
+        perfomers = []
+        products_in_order = set(order.ordered_products.values_list('product', flat=True))
+
+        for restaurant, products in products_in_restaurant.items():
+            if products_in_order.issubset(products):
+                perfomers.append(restaurant)
+
+        order_details.append(
+            {
+                'pk': order.pk,
+                'final_price': order.final_price,
+                'firstname': order.firstname,
+                'lastname': order.lastname,
+                'phonenumber': order.phonenumber,
+                'address': order.address,
+                'status': order.get_status_display(),
+                'payment': order.get_payment_display(),
+                'restaurants': perfomers,
+                'restaurant': order.restaurant
+            }
+
+        )
+
     return render(
         request,
         template_name='order_items.html',
         context={
-            'order_items': orders,
+            'order_items': order_details,
             'url': request.path
         }
     )

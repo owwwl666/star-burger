@@ -20,23 +20,37 @@
         <th>Адрес доставки</th>
         <th>Статус</th>
         <th>Способ оплаты</th>
+        <th>Рестораны</th>
         <th>Редактировать</th>
       </tr>
 
       {% for item in order_items %}
-        {% if item.status != 'delivered' %}
-          <tr>
-            <td>{{ item.pk }}</td>
-            <td>{{ item.final_price }}</td>
-            <td>{{ item.firstname }} {{ item.lastname }}</td>
-            <td>{{ item.phonenumber }}</td>
-            <td>{{ item.address }}</td>
-            <td>{{ item.get_status_display }}</td>
-            <td>{{ item.get_payment_display }}</td>
-            <td><a href="{% url "admin:foodcartapp_order_change" object_id=item.pk %}?next={{ url | urlencode }}">Редактировать</a>
-            </td>
-          </tr>
-        {% endif %}
+        <tr>
+          <td>{{ item.pk }}</td>
+          <td>{{ item.final_price }}</td>
+          <td>{{ item.firstname }} {{ item.lastname }}</td>
+          <td>{{ item.phonenumber }}</td>
+          <td>{{ item.address }}</td>
+          <td>{{ item.status }}</td>
+          <td>{{ item.payment }}</td>
+          <td>
+            {% if item.status == 'Необработанный' %}
+              <details>
+                <summary>Может быть приготовлен ресторанами:</summary>
+                <br>
+                {% for restaurant in item.restaurants %}
+                  <p><b>{{ restaurant }}</b></p>
+                {% endfor %}
+              </details>
+            {% elif item.status == 'Сборка' %}
+              <p>Готовит {{ item.restaurant }}</p>
+            {% else %}
+              <p>В пути</p>
+            {% endif %}
+          </td>
+          <td><a href="{% url "admin:foodcartapp_order_change" object_id=item.pk %}?next={{ url | urlencode }}">Редактировать</a>
+          </td>
+        </tr>
       {% endfor %}
     </table>
   </div>
