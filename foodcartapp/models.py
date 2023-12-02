@@ -41,7 +41,7 @@ class ProductQuerySet(models.QuerySet):
 
 class OrderQuerySet(models.QuerySet):
     def calculate_final_price(self):
-        return self.annotate(
+        return self.select_related('restaurant').annotate(
             final_price=Sum(F('ordered_products__order_price'))
         )
 
@@ -213,6 +213,14 @@ class Order(models.Model):
     comment = models.TextField(
         blank=True,
         verbose_name='Комментарий'
+    )
+
+    restaurant = models.ForeignKey(
+        'Restaurant',
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        verbose_name='Исполнитель заказа'
     )
 
     objects = OrderQuerySet.as_manager()
