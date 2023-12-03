@@ -38,8 +38,8 @@
               <details>
                 <summary>Может быть приготовлен ресторанами:</summary>
                 <br>
-                {% for restaurant in item.restaurants %}
-                  <p><b>{{ restaurant }}</b></p>
+                {% for restaurant,distance in item.restaurants %}
+                  <p><b>{{ restaurant }} - {{ distance }} км</b></p>
                 {% endfor %}
               </details>
             {% elif item.status == 'Сборка' %}
