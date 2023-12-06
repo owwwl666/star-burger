@@ -5,15 +5,20 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('foodcartapp', '0052_auto_20231202_1705'),
+        ("foodcartapp", "0052_auto_20231202_1705"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='order',
-            name='registrated_at',
-            field=models.DateTimeField(db_index=True, default=datetime.datetime(2023, 12, 4, 10, 30, 33, 16197, tzinfo=datetime.timezone.utc), verbose_name='Дата создания заказа'),
+            model_name="order",
+            name="registrated_at",
+            field=models.DateTimeField(
+                db_index=True,
+                default=datetime.datetime(
+                    2023, 12, 4, 10, 30, 33, 16197, tzinfo=datetime.timezone.utc
+                ),
+                verbose_name="Дата создания заказа",
+            ),
         ),
     ]

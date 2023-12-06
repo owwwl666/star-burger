@@ -4,15 +4,14 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('foodcartapp', '0044_auto_20231125_0336'),
+        ("foodcartapp", "0044_auto_20231125_0336"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='productorder',
-            old_name='price',
-            new_name='order_price',
+            model_name="productorder",
+            old_name="price",
+            new_name="order_price",
         ),
     ]

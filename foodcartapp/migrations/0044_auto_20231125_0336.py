@@ -4,7 +4,7 @@ from django.db import migrations
 
 
 def calculate_price_order(apps, schema_editor):
-    ProductOrder = apps.get_model('foodcartapp', 'ProductOrder')
+    ProductOrder = apps.get_model("foodcartapp", "ProductOrder")
     ordered_products = ProductOrder.objects.all()
 
     for ordered_product in ordered_products.iterator():
@@ -14,7 +14,7 @@ def calculate_price_order(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('foodcartapp', '0043_productorder_price'),
+        ("foodcartapp", "0043_productorder_price"),
     ]
 
     operations = [

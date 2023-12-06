@@ -5,25 +5,43 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Location',
+            name="Location",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('address', models.CharField(max_length=200, unique=True, verbose_name='Адрес')),
-                ('longitude', models.FloatField(verbose_name='Долгота')),
-                ('latitude', models.FloatField(verbose_name='Широта')),
-                ('request_data', models.DateTimeField(db_index=True, default=datetime.datetime(2023, 12, 4, 10, 30, 33, 18386, tzinfo=datetime.timezone.utc), verbose_name='Дата запроса')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "address",
+                    models.CharField(max_length=200, unique=True, verbose_name="Адрес"),
+                ),
+                ("longitude", models.FloatField(verbose_name="Долгота")),
+                ("latitude", models.FloatField(verbose_name="Широта")),
+                (
+                    "request_data",
+                    models.DateTimeField(
+                        db_index=True,
+                        default=datetime.datetime(
+                            2023, 12, 4, 10, 30, 33, 18386, tzinfo=datetime.timezone.utc
+                        ),
+                        verbose_name="Дата запроса",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Локация',
-                'verbose_name_plural': 'Локации',
+                "verbose_name": "Локация",
+                "verbose_name_plural": "Локации",
             },
         ),
     ]

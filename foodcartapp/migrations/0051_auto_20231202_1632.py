@@ -7,20 +7,29 @@ from django.utils.timezone import utc
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('foodcartapp', '0050_order_payment_alter_order_registrated_at'),
+        ("foodcartapp", "0050_order_payment_alter_order_registrated_at"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='order',
-            name='restaurants',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='foodcartapp.restaurant', verbose_name='Исполнитель заказа'),
+            model_name="order",
+            name="restaurants",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="foodcartapp.restaurant",
+                verbose_name="Исполнитель заказа",
+            ),
         ),
         migrations.AlterField(
-            model_name='order',
-            name='registrated_at',
-            field=models.DateTimeField(db_index=True, default=datetime.datetime(2023, 12, 2, 13, 32, 39, 73447, tzinfo=utc), verbose_name='Дата создания заказа'),
+            model_name="order",
+            name="registrated_at",
+            field=models.DateTimeField(
+                db_index=True,
+                default=datetime.datetime(2023, 12, 2, 13, 32, 39, 73447, tzinfo=utc),
+                verbose_name="Дата создания заказа",
+            ),
         ),
     ]

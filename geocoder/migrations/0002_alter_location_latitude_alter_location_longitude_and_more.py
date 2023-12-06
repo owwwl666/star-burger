@@ -5,25 +5,30 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('geocoder', '0001_initial'),
+        ("geocoder", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='location',
-            name='latitude',
-            field=models.FloatField(blank=True, null=True, verbose_name='Широта'),
+            model_name="location",
+            name="latitude",
+            field=models.FloatField(blank=True, null=True, verbose_name="Широта"),
         ),
         migrations.AlterField(
-            model_name='location',
-            name='longitude',
-            field=models.FloatField(blank=True, null=True, verbose_name='Долгота'),
+            model_name="location",
+            name="longitude",
+            field=models.FloatField(blank=True, null=True, verbose_name="Долгота"),
         ),
         migrations.AlterField(
-            model_name='location',
-            name='request_data',
-            field=models.DateTimeField(db_index=True, default=datetime.datetime(2023, 12, 4, 11, 28, 41, 405874, tzinfo=datetime.timezone.utc), verbose_name='Дата запроса'),
+            model_name="location",
+            name="request_data",
+            field=models.DateTimeField(
+                db_index=True,
+                default=datetime.datetime(
+                    2023, 12, 4, 11, 28, 41, 405874, tzinfo=datetime.timezone.utc
+                ),
+                verbose_name="Дата запроса",
+            ),
         ),
     ]

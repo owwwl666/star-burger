@@ -5,24 +5,36 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('foodcartapp', '0040_remove_order_products_productorder'),
+        ("foodcartapp", "0040_remove_order_products_productorder"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='productorder',
-            options={'verbose_name': 'Товар в заказе', 'verbose_name_plural': 'Товары в заказе'},
+            name="productorder",
+            options={
+                "verbose_name": "Товар в заказе",
+                "verbose_name_plural": "Товары в заказе",
+            },
         ),
         migrations.AlterField(
-            model_name='productorder',
-            name='order',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='products', to='foodcartapp.order', verbose_name='Заказ'),
+            model_name="productorder",
+            name="order",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="products",
+                to="foodcartapp.order",
+                verbose_name="Заказ",
+            ),
         ),
         migrations.AlterField(
-            model_name='productorder',
-            name='product',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='orders', to='foodcartapp.product', verbose_name='Товар'),
+            model_name="productorder",
+            name="product",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="orders",
+                to="foodcartapp.product",
+                verbose_name="Товар",
+            ),
         ),
     ]

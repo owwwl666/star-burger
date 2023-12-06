@@ -6,20 +6,23 @@ from django.utils.timezone import utc
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('foodcartapp', '0051_auto_20231202_1632'),
+        ("foodcartapp", "0051_auto_20231202_1632"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='order',
-            old_name='restaurants',
-            new_name='restaurant',
+            model_name="order",
+            old_name="restaurants",
+            new_name="restaurant",
         ),
         migrations.AlterField(
-            model_name='order',
-            name='registrated_at',
-            field=models.DateTimeField(db_index=True, default=datetime.datetime(2023, 12, 2, 14, 5, 14, 702278, tzinfo=utc), verbose_name='Дата создания заказа'),
+            model_name="order",
+            name="registrated_at",
+            field=models.DateTimeField(
+                db_index=True,
+                default=datetime.datetime(2023, 12, 2, 14, 5, 14, 702278, tzinfo=utc),
+                verbose_name="Дата создания заказа",
+            ),
         ),
     ]

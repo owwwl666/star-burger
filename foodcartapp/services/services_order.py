@@ -1,5 +1,5 @@
-from foodcartapp.models import ProductOrder
 from foodcartapp.models import Order
+from foodcartapp.models import ProductOrder
 
 
 def create_order_in_db(firstname, lastname, phonenumber, address):
@@ -13,10 +13,9 @@ def create_order_in_db(firstname, lastname, phonenumber, address):
 
 
 def add_product_to_order(order, **product):
-    ordered_product = ProductOrder.objects.create(
-        order=order,
-        **product
-    )
+    ordered_product = ProductOrder.objects.create(order=order, **product)
 
-    ordered_product.order_price = ordered_product.quantity * ordered_product.product.price
+    ordered_product.order_price = (
+        ordered_product.quantity * ordered_product.product.price
+    )
     ordered_product.save()

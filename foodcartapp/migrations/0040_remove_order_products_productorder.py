@@ -5,23 +5,51 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('foodcartapp', '0039_rename_adress_order_address'),
+        ("foodcartapp", "0039_rename_adress_order_address"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='order',
-            name='products',
+            model_name="order",
+            name="products",
         ),
         migrations.CreateModel(
-            name='ProductOrder',
+            name="ProductOrder",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('quantity', models.PositiveIntegerField(db_index=True, verbose_name='Количество')),
-                ('order', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='orders', to='foodcartapp.order', verbose_name='Заказ')),
-                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='products', to='foodcartapp.product', verbose_name='Заказ')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "quantity",
+                    models.PositiveIntegerField(
+                        db_index=True, verbose_name="Количество"
+                    ),
+                ),
+                (
+                    "order",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="orders",
+                        to="foodcartapp.order",
+                        verbose_name="Заказ",
+                    ),
+                ),
+                (
+                    "product",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="products",
+                        to="foodcartapp.product",
+                        verbose_name="Заказ",
+                    ),
+                ),
             ],
         ),
     ]
