@@ -1,5 +1,5 @@
-from .models import ProductOrder
-from .models import Order
+from foodcartapp.models import ProductOrder
+from foodcartapp.models import Order
 
 
 def create_order_in_db(firstname, lastname, phonenumber, address):
@@ -9,7 +9,6 @@ def create_order_in_db(firstname, lastname, phonenumber, address):
         phonenumber=phonenumber,
         address=address,
     )
-
     return order
 
 
