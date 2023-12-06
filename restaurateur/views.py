@@ -8,10 +8,12 @@ from django.contrib.auth.decorators import user_passes_test
 
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import views as auth_views
-from geopy import distance
 
 from foodcartapp.models import Product, Restaurant, Order
-from star_burger.settings import YANDEX_APIKEY
+from foodcartapp.services.services_location import annotate_coordinates, calculate_distance
+from geocoder.models import Location
+from django.db.models import OuterRef, Subquery
+
 from operator import itemgetter
 
 
@@ -94,53 +96,29 @@ def view_restaurants(request):
     })
 
 
-def fetch_coordinates(apikey, address):
-    base_url = "https://geocode-maps.yandex.ru/1.x"
-    response = requests.get(base_url, params={
-        "geocode": address,
-        "apikey": apikey,
-        "format": "json",
-    })
-    response.raise_for_status()
-    found_places = response.json()['response']['GeoObjectCollection']['featureMember']
-
-    if not found_places:
-        return None
-
-    most_relevant = found_places[0]
-    lon, lat = most_relevant['GeoObject']['Point']['pos'].split(" ")
-    return lat, lon
-
-
 @user_passes_test(is_manager, login_url='restaurateur:login')
 def view_orders(request):
-    orders = Order.objects. \
-        calculate_final_price(). \
-        exclude(status='delivered')
+    orders, restaurants = annotate_coordinates(Order, Restaurant)
 
-    restaurants = Restaurant.objects.all()
-
-    products_in_restaurant = {restaurant: set(restaurant.menu_items.values_list('product', flat=True)) for
+    products_in_restaurant = {restaurant: restaurant.menu_items.values_list('product', flat=True) for
                               restaurant in
-                              restaurants}
+                              restaurants}.items()
+    products_in_order = {order: order.ordered_products.values_list('product', flat=True) for
+                         order in
+                         orders}.items()
 
     order_details = []
 
-    for order in orders:
+    for order, products_order in products_in_order:
         perfomers = {}
-        products_in_order = set(order.ordered_products.values_list('product', flat=True))
-
-        for restaurant, products in products_in_restaurant.items():
-            if products_in_order.issubset(products):
+        for restaurant, products_restaurant in products_in_restaurant:
+            if set(products_order).issubset(products_restaurant):
                 try:
-                    spacing = distance.distance(
-                        fetch_coordinates(YANDEX_APIKEY, restaurant.address),
-                        fetch_coordinates(YANDEX_APIKEY, order.address)
-                    ).km
+                    distance = calculate_distance(order, restaurant)
                 except requests.exceptions.HTTPError:
                     perfomers[restaurant] = 'Ошибка определения координат'
                 else:
-                    perfomers[restaurant] = spacing
+                    perfomers[restaurant] = distance
 
         order_details.append(
             {
