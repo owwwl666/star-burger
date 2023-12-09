@@ -120,6 +120,7 @@ class Order(models.Model):
 
     CASH = "cash"
     NON_CASH = "non-cash"
+    NOT_INDICATED = "not indicated"
 
     ORDER_STATUS = [
         (RAW, "Необработанный"),
@@ -129,6 +130,7 @@ class Order(models.Model):
     ]
 
     PAYMENT_METHOD = [
+        (NOT_INDICATED, "Не указано"),
         (CASH, "Наличностью"),
         (NON_CASH, "Электронно"),
     ]
@@ -165,7 +167,7 @@ class Order(models.Model):
         null=True,
         blank=True,
         choices=PAYMENT_METHOD,
-        default=CASH,
+        default=NOT_INDICATED,
         verbose_name="Способ оплаты",
         db_index=True,
     )
