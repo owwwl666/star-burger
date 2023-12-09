@@ -140,7 +140,7 @@ class Order(models.Model):
     )
     address = models.CharField(max_length=200, verbose_name="Адрес доставки")
 
-    registrated_at = models.DateTimeField(
+    registered_at = models.DateTimeField(
         default=timezone.now(), verbose_name="Дата создания заказа", db_index=True
     )
 
