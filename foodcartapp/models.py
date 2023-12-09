@@ -215,7 +215,6 @@ class ProductOrder(models.Model):
         decimal_places=2,
         db_index=True,
         validators=[MinValueValidator(0)],
-        default=0,
     )
 
     class Meta:
