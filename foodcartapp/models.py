@@ -211,6 +211,8 @@ class ProductOrder(models.Model):
 
     order_price = models.DecimalField(
         "Цена заказа",
+        null=True,
+        blank=True,
         max_digits=8,
         decimal_places=2,
         db_index=True,
