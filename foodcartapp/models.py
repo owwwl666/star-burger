@@ -137,9 +137,7 @@ class Order(models.Model):
 
     firstname = models.CharField(max_length=200, verbose_name="Имя заказчика")
     lastname = models.CharField(max_length=200, verbose_name="Фамилия заказчика")
-    phonenumber = PhoneNumberField(
-        region="RU", verbose_name="Номер телефона", db_index=True
-    )
+    phonenumber = PhoneNumberField(verbose_name="Номер телефона", db_index=True)
     address = models.CharField(max_length=200, verbose_name="Адрес доставки")
 
     registered_at = models.DateTimeField(

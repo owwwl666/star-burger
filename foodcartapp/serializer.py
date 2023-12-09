@@ -1,4 +1,5 @@
 from rest_framework.serializers import ModelSerializer
+from phonenumber_field.serializerfields import PhoneNumberField
 
 from .models import Order
 from .models import ProductOrder
@@ -13,6 +14,7 @@ class ProductOrderSerializer(ModelSerializer):
 
 class OrderSerializer(ModelSerializer):
     products = ProductOrderSerializer(many=True, allow_empty=False, write_only=True)
+    phonenumber = PhoneNumberField(region='RU')
 
     class Meta:
         model = Order
