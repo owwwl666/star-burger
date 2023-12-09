@@ -6,9 +6,6 @@ from rest_framework.response import Response
 
 from .models import Product
 from .serializer import OrderSerializer
-from .services.services_order import add_product_to_order
-from .services.services_order import create_order_in_db
-from .services.services_location import get_or_create_location
 
 
 def banners_list_api(request):
@@ -75,27 +72,8 @@ def product_list_api(request):
 
 @api_view(["POST"])
 def register_order(request):
-    valid_order = OrderSerializer(data=request.data)
-    valid_order.is_valid(raise_exception=True)
-
-    products = valid_order.validated_data.get("products")
-    firstname = valid_order.validated_data.get("firstname")
-    lastname = valid_order.validated_data.get("lastname")
-    phonenumber = valid_order.validated_data.get("phonenumber")
-    address = valid_order.validated_data.get("address")
     with transaction.atomic():
-        order = create_order_in_db(
-            firstname=firstname,
-            lastname=lastname,
-            phonenumber=phonenumber,
-            address=address,
-        )
-
-        get_or_create_location(order.address)
-
-        serialize_order = OrderSerializer(order)
-
-        for product in products:
-            add_product_to_order(order=order, **product)
-
+        serialize_order = OrderSerializer(data=request.data)
+        serialize_order.is_valid(raise_exception=True)
+        serialize_order.save()
         return Response(serialize_order.data)
