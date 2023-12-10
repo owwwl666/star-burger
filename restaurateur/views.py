@@ -1,6 +1,5 @@
 from operator import itemgetter
 
-import requests
 from django import forms
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import views as auth_views
@@ -128,12 +127,8 @@ def view_orders(request):
         perfomers = {}
         for restaurant, products_restaurant in products_in_restaurant:
             if set(products_order).issubset(products_restaurant):
-                try:
-                    distance = calculate_distance(order, restaurant)
-                except requests.exceptions.HTTPError:
-                    perfomers[restaurant] = "Ошибка определения координат"
-                else:
-                    perfomers[restaurant] = distance
+                distance = calculate_distance(order, restaurant)
+                perfomers[restaurant] = distance
 
         order_details.append(
             {
