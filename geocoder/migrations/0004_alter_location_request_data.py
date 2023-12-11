@@ -6,15 +6,18 @@ from django.utils.timezone import utc
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('geocoder', '0003_alter_location_request_data'),
+        ("geocoder", "0003_alter_location_request_data"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='location',
-            name='request_data',
-            field=models.DateTimeField(db_index=True, default=datetime.datetime(2023, 12, 9, 9, 33, 19, 241497, tzinfo=utc), verbose_name='Дата запроса'),
+            model_name="location",
+            name="request_data",
+            field=models.DateTimeField(
+                db_index=True,
+                default=datetime.datetime(2023, 12, 9, 9, 33, 19, 241497, tzinfo=utc),
+                verbose_name="Дата запроса",
+            ),
         ),
     ]

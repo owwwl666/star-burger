@@ -109,7 +109,7 @@ class ProductAdmin(admin.ModelAdmin):
 
 
 @admin.register(ProductCategory)
-class ProductAdmin(admin.ModelAdmin):
+class ProductCategoryAdmin(admin.ModelAdmin):
     pass
 
 
@@ -144,3 +144,4 @@ class OrderAdmin(admin.ModelAdmin):
 @admin.register(ProductOrder)
 class ProductOrderAdmin(admin.ModelAdmin):
     list_display = ["order", "product", "quantity"]
+    readonly_fields = ["order_price"]

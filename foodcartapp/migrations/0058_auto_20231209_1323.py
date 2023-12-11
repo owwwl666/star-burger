@@ -7,20 +7,28 @@ import phonenumber_field.modelfields
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('foodcartapp', '0057_auto_20231209_1258'),
+        ("foodcartapp", "0057_auto_20231209_1258"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='order',
-            name='phonenumber',
-            field=phonenumber_field.modelfields.PhoneNumberField(db_index=True, max_length=128, region=None, verbose_name='Номер телефона'),
+            model_name="order",
+            name="phonenumber",
+            field=phonenumber_field.modelfields.PhoneNumberField(
+                db_index=True,
+                max_length=128,
+                region=None,
+                verbose_name="Номер телефона",
+            ),
         ),
         migrations.AlterField(
-            model_name='order',
-            name='registered_at',
-            field=models.DateTimeField(db_index=True, default=datetime.datetime(2023, 12, 9, 10, 23, 29, 306133, tzinfo=utc), verbose_name='Дата создания заказа'),
+            model_name="order",
+            name="registered_at",
+            field=models.DateTimeField(
+                db_index=True,
+                default=datetime.datetime(2023, 12, 9, 10, 23, 29, 306133, tzinfo=utc),
+                verbose_name="Дата создания заказа",
+            ),
         ),
     ]

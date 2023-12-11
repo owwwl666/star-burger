@@ -1,5 +1,5 @@
-from rest_framework.serializers import ModelSerializer
 from phonenumber_field.serializerfields import PhoneNumberField
+from rest_framework.serializers import ModelSerializer
 
 from .models import Order
 from .models import ProductOrder
@@ -14,7 +14,7 @@ class ProductOrderSerializer(ModelSerializer):
 
 class OrderSerializer(ModelSerializer):
     products = ProductOrderSerializer(many=True, allow_empty=False, write_only=True)
-    phonenumber = PhoneNumberField(region='RU')
+    phonenumber = PhoneNumberField(region="RU")
 
     class Meta:
         model = Order
@@ -25,17 +25,19 @@ class OrderSerializer(ModelSerializer):
             firstname=validated_data.get("firstname"),
             lastname=validated_data.get("lastname"),
             phonenumber=validated_data.get("phonenumber"),
-            address=validated_data.get("address")
+            address=validated_data.get("address"),
         )
 
         get_or_create_location(order.address)
 
         for product in validated_data.get("products"):
-            ordered_product = ProductOrder.objects.create(order=order, **product)
+            quantity = product.get("quantity")
+            product_price = product.get("product").price
 
-            ordered_product.order_price = (
-                ordered_product.quantity * ordered_product.product.price
+            ordered_product = ProductOrder.objects.create(
+                order=order, **product, order_price=quantity * product_price
             )
+
             ordered_product.save()
 
         return order

@@ -7,20 +7,31 @@ from django.utils.timezone import utc
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('foodcartapp', '0056_auto_20231209_1241'),
+        ("foodcartapp", "0056_auto_20231209_1241"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='order',
-            name='registered_at',
-            field=models.DateTimeField(db_index=True, default=datetime.datetime(2023, 12, 9, 9, 58, 32, 921040, tzinfo=utc), verbose_name='Дата создания заказа'),
+            model_name="order",
+            name="registered_at",
+            field=models.DateTimeField(
+                db_index=True,
+                default=datetime.datetime(2023, 12, 9, 9, 58, 32, 921040, tzinfo=utc),
+                verbose_name="Дата создания заказа",
+            ),
         ),
         migrations.AlterField(
-            model_name='productorder',
-            name='order_price',
-            field=models.DecimalField(blank=True, db_index=True, decimal_places=2, max_digits=8, null=True, validators=[django.core.validators.MinValueValidator(0)], verbose_name='Цена заказа'),
+            model_name="productorder",
+            name="order_price",
+            field=models.DecimalField(
+                blank=True,
+                db_index=True,
+                decimal_places=2,
+                max_digits=8,
+                null=True,
+                validators=[django.core.validators.MinValueValidator(0)],
+                verbose_name="Цена заказа",
+            ),
         ),
     ]
