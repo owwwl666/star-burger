@@ -78,6 +78,7 @@ def register_order(request):
         serialize_order.save()
         return Response(serialize_order.data)
 
+
 def get_my_ip(request):
     return JsonResponse({
         'ip': request.META.get('HTTP_X_REAL_IP') or request.META.get('REMOTE_ADDR'),
