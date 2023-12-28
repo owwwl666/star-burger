@@ -39,9 +39,16 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
+    "rollbar.contrib.django.middleware.RollbarNotifierMiddleware",
 ]
 
 ROOT_URLCONF = "star_burger.urls"
+
+ROLLBAR = {
+    'access_token': env.str("TOKEN_ROLLBAR"),
+    'environment': env.str("ENVIRONMENT_ROLLBAR"),
+    'root': BASE_DIR,
+}
 
 DEBUG_TOOLBAR_PANELS = [
     "debug_toolbar.panels.versions.VersionsPanel",
