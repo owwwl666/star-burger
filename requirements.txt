@@ -9,3 +9,4 @@ Pillow==8.2.0
 phonenumbers==8.13.25
 requests==2.31.0
 ruff==0.1.7
+rollbar==1.0.0
