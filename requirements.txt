@@ -5,8 +5,7 @@ django-phonenumbers==1.0.1
 django-phonenumber-field==7.2.0
 environs[django]==9.3.2
 geopy==2.4.1
-Pillow==10.1.0
+Pillow==8.2.0
 phonenumbers==8.13.25
 requests==2.31.0
 ruff==0.1.7
-gunicorn==21.2.0
