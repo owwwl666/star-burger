@@ -146,17 +146,58 @@ DB_URL=postgres://USER:PASSWORD@HOST:PORT/DB_NAME
 
 ## Как запустить prod-версию сайта
 
-Собрать фронтенд:
-
-```sh
-./node_modules/.bin/parcel build bundles-src/index.js --dist-dir bundles --public-url="./"
-```
-
-Настроить бэкенд: создать файл `.env` в каталоге `star_burger/` со следующими настройками:
+Создать файл `.env` в каталоге `star_burger/` со следующими настройками:
 
 - `DEBUG` — дебаг-режим. Поставьте `False`.
 - `SECRET_KEY` — секретный ключ проекта. Он отвечает за шифрование на сайте. Например, им зашифрованы все пароли на вашем сайте.
 - `ALLOWED_HOSTS` — [см. документацию Django](https://docs.djangoproject.com/en/3.1/ref/settings/#allowed-hosts)
+- `DB_URL` - адрес подключения базы данных (postgres://USER:PASSWORD@HOST:PORT/DB_NAME).
+- `TOKEN_ROLLBAR` - токен для подключения к Rollbar.
+- `ENVIRONMENT_ROLLBAR`=production.
+- `YANDEX_APIKEY` - токен подключения к системе Yandex для вычисления координат.
+
+Перейти в директорию с проектом
+
+```sh
+cd /opt
+```
+
+Создать bash файл
+
+```sh
+nano star_burger
+```
+
+Наполнить файл командами
+
+```
+#!/bin/bash
+cd /opt/star-burger/
+git pull
+pyenv activate star_burger
+pip install -r requirements.txt
+npm ci --dev
+./node_modules/.bin/parcel watch bundles-src/index.js --dist-dir bundles --public-url="./"
+python manage.py collectstatic
+python manage.py migrate
+pyenv deactivate
+systemctl restart star-burger.service certbot-renewal.timer
+systemctl reload nginx.service
+git push
+echo 'No Errors'
+```
+
+Сделать файл исполняемым
+
+```sh
+chmod +x star_burger
+```
+
+Запустить файл
+
+```sh
+./star_burger
+```
 
 ## Цели проекта
 
