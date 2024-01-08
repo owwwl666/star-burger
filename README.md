@@ -183,7 +183,6 @@ python manage.py migrate
 pyenv deactivate
 systemctl restart star-burger.service certbot-renewal.timer
 systemctl reload nginx.service
-git push
 echo 'No Errors'
 ```
 
