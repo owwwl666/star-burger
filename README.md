@@ -2,6 +2,8 @@
 
 Это сайт сети ресторанов Star Burger. Здесь можно заказать превосходные бургеры с доставкой на дом.
 
+**Ссылка на сайт**:[https://owwwl-burgers.fun/](https://owwwl-burgers.fun/)
+
 ![скриншот сайта](https://dvmn.org/filer/canonical/1594651635/686/)
 
 
@@ -143,6 +145,17 @@ Parcel будет следить за файлами в каталоге `bundle
 ```
 DB_URL=postgres://USER:PASSWORD@HOST:PORT/DB_NAME
 ```
+Перейдите в `settings.py` и установите для переменной `DATABASES` следующее значение:
+
+```python
+{
+    "default": dj_database_url.config(
+        default=env.str("DB_URL"),
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
+}
+```
 
 ## Как запустить prod-версию сайта
 
@@ -181,9 +194,9 @@ npm ci --dev
 python manage.py collectstatic
 python manage.py migrate
 pyenv deactivate
-systemctl restart star-burger.service certbot-renewal.timer
+systemctl restart star-burger.service
 systemctl reload nginx.service
-echo 'No Errors'
+curl -H "X-Rollbar-Access-Token: $POST_SERVER_ACCESS_TOKEN" -H "Content-Type: application/json" -X POST 'https://api.rollbar.com/api/1/deploy' -d '{"environment": "production","revision": "'$(git rev-parse --short HEAD)'","local_username":"username"}'
 ```
 
 Сделать файл исполняемым
