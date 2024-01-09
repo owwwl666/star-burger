@@ -185,6 +185,24 @@ git clone https://github.com/devmanorg/star-burger.git
 
 Поднимите Gunicorn и Nginx для работы сайта
 
+Создайте переменную окружения `POST_SERVER_ACCESS_TOKEN` с токеном для взаимодействия с Rollbar, выполнив следующие действия:
+
+```sh
+nano ~/bashrc
+```
+
+В конец файла добьте экспорт переменной окружения
+
+```sh
+export POST_SERVER_ACCESS_TOKEN='post_server_item'
+```
+
+Выполните команду для фиксации изменений:
+
+```sh
+source ~/bashrc
+```
+
 Создать bash файл
 
 ```sh
