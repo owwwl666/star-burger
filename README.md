@@ -169,11 +169,21 @@ DB_URL=postgres://USER:PASSWORD@HOST:PORT/DB_NAME
 - `ENVIRONMENT_ROLLBAR`=production.
 - `YANDEX_APIKEY` - токен подключения к системе Yandex для вычисления координат.
 
-Перейти в директорию с проектом
+Перейти в директорию, где будет находиться проект
 
 ```sh
 cd /opt
 ```
+
+Скачайте проект на сервер
+
+```sh
+git clone https://github.com/devmanorg/star-burger.git
+```
+
+Создайте виртуальное окружение `star_burger` проекта и установите NodeJS, как и для разработческой версии сайта
+
+Поднимите Gunicorn и Nginx для работы сайта
 
 Создать bash файл
 
