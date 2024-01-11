@@ -165,8 +165,7 @@ DB_URL=postgres://USER:PASSWORD@HOST:PORT/DB_NAME
 - `SECRET_KEY` — секретный ключ проекта. Он отвечает за шифрование на сайте. Например, им зашифрованы все пароли на вашем сайте.
 - `ALLOWED_HOSTS` — [см. документацию Django](https://docs.djangoproject.com/en/3.1/ref/settings/#allowed-hosts)
 - `DB_URL` - адрес подключения базы данных (postgres://USER:PASSWORD@HOST:PORT/DB_NAME).
-- `TOKEN_ROLLBAR` - токен для подключения к Rollbar.
-- `ENVIRONMENT_ROLLBAR`=production.
+- `ROLLBAR_TOKEN` - токен для подключения к Rollbar.
 - `YANDEX_APIKEY` - токен подключения к системе Yandex для вычисления координат.
 
 Перейти в директорию, где будет находиться проект
@@ -201,30 +200,6 @@ export POST_SERVER_ACCESS_TOKEN='post_server_item'
 
 ```sh
 source ~/bashrc
-```
-
-Создать bash файл
-
-```sh
-nano star_burger
-```
-
-Наполнить файл командами
-
-```
-#!/bin/bash
-cd /opt/star-burger/
-git pull
-pyenv activate star_burger
-pip install -r requirements.txt
-npm ci --dev
-./node_modules/.bin/parcel watch bundles-src/index.js --dist-dir bundles --public-url="./"
-python manage.py collectstatic
-python manage.py migrate
-pyenv deactivate
-systemctl restart star-burger.service
-systemctl reload nginx.service
-curl -H "X-Rollbar-Access-Token: $POST_SERVER_ACCESS_TOKEN" -H "Content-Type: application/json" -X POST 'https://api.rollbar.com/api/1/deploy' -d '{"environment": "production","revision": "'$(git rev-parse --short HEAD)'","local_username":"username"}'
 ```
 
 Сделать файл исполняемым
