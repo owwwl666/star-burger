@@ -81,7 +81,7 @@ pip install -r requirements.txt
 Определите переменную. Создать файл `.env` в каталоге `/star_burger/` и положите туда такой код:
 ```sh
 DEBUG=True
-SECRET_KEY=django-insecure-0if40nf4nf93n4
+SECRET_KEY - секретный ключ Django проекта
 YANDEX_APIKEY - токен подключения к системе Yandex для вычисления координат
 DB_URL=postgres://USER:PASSWORD@localhost:PORT/DB_NAME
 ```
@@ -171,7 +171,7 @@ Parcel будет следить за файлами в каталоге `bundle
 Измените файл `.env` на следующий:
 
 ```
-SECRET_KEY=django-insecure-0if40nf4nf93n4
+SECRET_KEY - секретный ключ Django проекта
 YANDEX_APIKEY - токен подключения к системе Yandex для вычисления координат
 POSTGRES_USER - название пользователя БД # для контейнера с PostgreSQL
 POSTGRES_PASSWORD - пароль от БД # для контейнера с PostgreSQL
