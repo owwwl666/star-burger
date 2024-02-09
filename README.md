@@ -255,13 +255,69 @@ source ~/bashrc
 Сделать файл исполняемым
 
 ```sh
-chmod +x star_burger
+chmod +x star_burger_prod
 ```
 
 Запустить файл
 
 ```sh
 ./star_burger
+```
+
+## Как запустить prod-версию сайта через Docker
+
+Установите docker и docker-compose на сервере по той же схеме, что и на локальной машине.
+
+Создать файл `.env` в каталоге `/star_burger/` со следующими настройками:
+
+- `DEBUG` — дебаг-режим. Поставьте `False`.
+- `SECRET_KEY` — секретный ключ проекта. Он отвечает за шифрование на сайте. Например, им зашифрованы все пароли на вашем сайте.
+- `ALLOWED_HOSTS` — [см. документацию Django](https://docs.djangoproject.com/en/3.1/ref/settings/#allowed-hosts)
+- `DB_URL` - адрес подключения базы данных (postgres://USER:PASSWORD@HOST:PORT/DB_NAME).
+- `POSTGRES_USER` - название пользователя БД # для контейнера с PostgreSQL
+- `POSTGRES_PASSWORD` - пароль от БД # для контейнера с PostgreSQL
+- `POSTGRES_DB` - название базы данных # для контейнера с PostgreSQL
+- `ROLLBAR_TOKEN` - токен для подключения к Rollbar.
+- `YANDEX_APIKEY` - токен подключения к системе Yandex для вычисления координат.
+
+Создайте переменную окружения `POST_SERVER_ACCESS_TOKEN` с токеном для взаимодействия с Rollbar, выполнив следующие действия:
+
+```sh
+nano ~/bashrc
+```
+
+В конец файла добьте экспорт переменной окружения
+
+```sh
+export POST_SERVER_ACCESS_TOKEN='post_server_item'
+```
+
+Выполните команду для фиксации изменений:
+
+```sh
+source ~/bashrc
+```
+
+Сделать файл исполняемым
+
+```sh
+chmod +x star_burger_docker
+```
+
+Запустить файл
+
+```sh
+./star_burger_docker
+```
+
+Если хотите перенести локальные данные из базы данных, сделайте дамп БД и отправьте их в docker контейнер с PostgreSQL:
+
+```
+pg_dump DB_NAME > dump.sql
+```
+
+```
+docker exec -i database /bin/bash -c "PGPASSWORD=POSTGRES_PASSWORD psql --username POSTGRES_USER POSTGRES_DB" < dump.sql
 ```
 
 ## Цели проекта
