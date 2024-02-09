@@ -1,0 +1,6 @@
+git pull
+docker-compose up -d
+cp -rT /var/lib/docker/volumes/star-burger_static_data/_data /var/www/frontend/
+cp -rT /var/lib/docker/volumes/star-burger_media_data/_data /var/www/media/
+systemctl reload nginx.service
+curl -H "X-Rollbar-Access-Token: $POST_SERVER_ACCESS_TOKEN" -H "Content-Type: application/json" -X POST 'https://api.rollbar.com/api/1/deploy' -d '{"environment": "production","revision": "'$(git rev-parse --short HEAD)'","local_username":"owwwl"}'
