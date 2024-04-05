@@ -7,15 +7,16 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
-      - ./star_burger/.env
+      - backend/star_burger/.env
 
   django:
-    image: backend:latest
-    container_name: backend
+    image: back:latest
+    container_name: back
+    working_dir: /star_burger/backend
     command: >
       sh -c "python manage.py migrate && gunicorn -b 0.0.0.0:8000 star_burger.wsgi:application"
     env_file:
-      - ./star_burger/.env
+      - backend/star_burger/.env
     volumes:
       - static_data:/star_burger/staticfiles
       - media_data:/star_burger/media
@@ -24,7 +25,7 @@ services:
       - postgresql
 
   nginx:
-    image: frontend:latest
+    image: front:latest
     container_name: frontend
     ports:
       - "80:80"
