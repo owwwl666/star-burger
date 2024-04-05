@@ -15,7 +15,29 @@
 
 Третий интерфейс — это админка. Преимущественно им пользуются программисты при разработке сайта. Также сюда заходит менеджер, чтобы обновить меню ресторанов Star Burger.
 
-## Как запустить dev-версию сайта
+## Как поднять PostgreSQL
+
+Уснановите postgresql и создайте базу данных для проекта:
+  [Ссылка на туториал](https://www.digitalocean.com/community/tutorials/how-to-use-postgresql-with-your-django-application-on-ubuntu-14-04)
+
+Создайте переменную окружения и присвойте ей следующее значение:
+
+```
+DB_URL=postgres://USER:PASSWORD@localhost:PORT/DB_NAME
+```
+Перейдите в `settings.py` и установите для переменной `DATABASES` следующее значение:
+
+```python
+{
+    "default": dj_database_url.config(
+        default=env.str("DB_URL"),
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
+}
+```
+
+## Как запустить dev-версию сайта вручную
 
 Для запуска сайта нужно запустить **одновременно** бэкенд и фронтенд, в двух терминалах.
 
@@ -56,11 +78,12 @@ python -m venv venv
 pip install -r requirements.txt
 ```
 
-Определите переменную. Создать файл `.env` в каталоге `star_burger/` и положите туда такой код:
+Определите переменную. Создать файл `.env` в каталоге `/star_burger/` и положите туда такой код:
 ```sh
 DEBUG=True
-SECRET_KEY=django-insecure-0if40nf4nf93n4
+SECRET_KEY - секретный ключ Django проекта
 YANDEX_APIKEY - токен подключения к системе Yandex для вычисления координат
+DB_URL=postgres://USER:PASSWORD@localhost:PORT/DB_NAME
 ```
 
 
@@ -138,31 +161,55 @@ Parcel будет следить за файлами в каталоге `bundle
 
 **Сбросьте кэш браузера <kbd>Ctrl-F5</kbd>.** Браузер при любой возможности старается кэшировать файлы статики: CSS, картинки и js-код. Порой это приводит к странному поведению сайта, когда код уже давно изменился, но браузер этого не замечает и продолжает использовать старую закэшированную версию. В норме Parcel решает эту проблему самостоятельно. Он следит за пересборкой фронтенда и предупреждает JS-код в браузере о необходимости подтянуть свежий код. Но если вдруг что-то у вас идёт не так, то начните ремонт со сброса браузерного кэша, жмите <kbd>Ctrl-F5</kbd>.
 
-### Как поднять PostgreSQL
 
-Уснановите postgresql и создайте базу данных для проекта:
-  [Ссылка на туториал](https://www.digitalocean.com/community/tutorials/how-to-use-postgresql-with-your-django-application-on-ubuntu-14-04)
+## Как запустить dev-версию сайта с помоью Docker
 
-Создайте переменную окружения и присвойте ей следующее значение:
+Установите [docker и docker-compose](https://docs.docker.com/engine/install/) на свою операционную систему.
+
+Перейдите в каталог с проектом.
+
+Измените файл `.env` на следующий:
 
 ```
-DB_URL=postgres://USER:PASSWORD@HOST:PORT/DB_NAME
+SECRET_KEY - секретный ключ Django проекта
+YANDEX_APIKEY - токен подключения к системе Yandex для вычисления координат
+POSTGRES_USER - название пользователя БД # для контейнера с PostgreSQL
+POSTGRES_PASSWORD - пароль от БД # для контейнера с PostgreSQL
+POSTGRES_DB - название базы данных # для контейнера с PostgreSQL
+DB_URL=DB_URL=postgres://USER:PASSWORD@postgresql:5432/DB_NAME
 ```
-Перейдите в `settings.py` и установите для переменной `DATABASES` следующее значение:
 
-```python
-{
-    "default": dj_database_url.config(
-        default=env.str("DB_URL"),
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
-}
+Соберите образы для фронтенда и бэкенда, выполнив следующие команды в терминале:
+
 ```
+docker build -t frontend ./nginx/
+```
+
+
+```
+docker build -t backend .
+```
+
+Запустите команду docker-compose, чтобы собрать проект:
+
+```
+docker-compose up -d
+```
+
+Если хотите перенести локальные данные из базы данных, сделайте дамп БД и отправьте их в docker контейнер с PostgreSQL:
+
+```
+pg_dump DB_NAME > dump.sql
+```
+
+```
+docker exec -i database /bin/bash -c "PGPASSWORD=POSTGRES_PASSWORD psql --username POSTGRES_USER POSTGRES_DB" < dump.sql
+```
+
 
 ## Как запустить prod-версию сайта
 
-Создать файл `.env` в каталоге `star_burger/` со следующими настройками:
+Создать файл `.env` в каталоге `/star_burger/` со следующими настройками:
 
 - `DEBUG` — дебаг-режим. Поставьте `False`.
 - `SECRET_KEY` — секретный ключ проекта. Он отвечает за шифрование на сайте. Например, им зашифрованы все пароли на вашем сайте.
@@ -208,13 +255,69 @@ source ~/bashrc
 Сделать файл исполняемым
 
 ```sh
-chmod +x star_burger
+chmod +x star_burger_prod
 ```
 
 Запустить файл
 
 ```sh
 ./star_burger
+```
+
+## Как запустить prod-версию сайта через Docker
+
+Установите docker и docker-compose на сервере по той же схеме, что и на локальной машине.
+
+Создать файл `.env` в каталоге `/star_burger/` со следующими настройками:
+
+- `DEBUG` — дебаг-режим. Поставьте `False`.
+- `SECRET_KEY` — секретный ключ проекта. Он отвечает за шифрование на сайте. Например, им зашифрованы все пароли на вашем сайте.
+- `ALLOWED_HOSTS` — [см. документацию Django](https://docs.djangoproject.com/en/3.1/ref/settings/#allowed-hosts)
+- `DB_URL` - адрес подключения базы данных (postgres://USER:PASSWORD@HOST:PORT/DB_NAME).
+- `POSTGRES_USER` - название пользователя БД # для контейнера с PostgreSQL
+- `POSTGRES_PASSWORD` - пароль от БД # для контейнера с PostgreSQL
+- `POSTGRES_DB` - название базы данных # для контейнера с PostgreSQL
+- `ROLLBAR_TOKEN` - токен для подключения к Rollbar.
+- `YANDEX_APIKEY` - токен подключения к системе Yandex для вычисления координат.
+
+Создайте переменную окружения `POST_SERVER_ACCESS_TOKEN` с токеном для взаимодействия с Rollbar, выполнив следующие действия:
+
+```sh
+nano ~/bashrc
+```
+
+В конец файла добьте экспорт переменной окружения
+
+```sh
+export POST_SERVER_ACCESS_TOKEN='post_server_item'
+```
+
+Выполните команду для фиксации изменений:
+
+```sh
+source ~/bashrc
+```
+
+Сделать файл исполняемым
+
+```sh
+chmod +x star_burger_docker
+```
+
+Запустить файл
+
+```sh
+./star_burger_docker
+```
+
+Если хотите перенести локальные данные из базы данных, сделайте дамп БД и отправьте их в docker контейнер с PostgreSQL:
+
+```
+pg_dump DB_NAME > dump.sql
+```
+
+```
+docker exec -i database /bin/bash -c "PGPASSWORD=POSTGRES_PASSWORD psql --username POSTGRES_USER POSTGRES_DB" < dump.sql
 ```
 
 ## Цели проекта
