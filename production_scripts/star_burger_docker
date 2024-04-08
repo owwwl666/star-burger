@@ -1,5 +1,5 @@
 git pull
-docker-compose up -d
+docker-compose -f docker-compose.prod.yaml up -d
 cp -rT /var/lib/docker/volumes/star-burger_static_data/_data /var/www/frontend/
 cp -rT /var/lib/docker/volumes/star-burger_media_data/_data /var/www/media/
 systemctl reload nginx.service
