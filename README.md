@@ -182,18 +182,21 @@ DB_URL=DB_URL=postgres://USER:PASSWORD@postgresql:5432/DB_NAME
 Соберите образы для фронтенда и бэкенда, выполнив следующие команды в терминале:
 
 ```
-docker build -t front ./nginx/
+docker build -t web_server -f ./nginx/
 ```
 
+```
+docker build -t frontend -f frontend/Dockerfile .
+```
 
 ```
-docker build -t back -f backend/Dockerfile .
+docker build -t backend -f backend/Dockerfile .
 ```
 
 Запустите команду docker-compose, чтобы собрать проект:
 
 ```
-docker-compose up -d
+docker-compose -f docker.compose.dev.yaml up -d
 ```
 
 Если хотите перенести локальные данные из базы данных, сделайте дамп БД и отправьте их в docker контейнер с PostgreSQL:
@@ -255,13 +258,13 @@ source ~/bashrc
 Сделать файл исполняемым
 
 ```sh
-chmod +x star_burger_prod
+chmod +x /production_scripts/star_burger_systemd
 ```
 
 Запустить файл
 
 ```sh
-./star_burger
+./production_scripts/star_burger_systemd
 ```
 
 ## Как запустить prod-версию сайта через Docker
@@ -301,13 +304,13 @@ source ~/bashrc
 Сделать файл исполняемым
 
 ```sh
-chmod +x star_burger_docker
+chmod +x /production_scripts/star_burger_docker
 ```
 
 Запустить файл
 
 ```sh
-./star_burger_docker
+./production_scripts/star_burger_docker
 ```
 
 Если хотите перенести локальные данные из базы данных, сделайте дамп БД и отправьте их в docker контейнер с PostgreSQL:
