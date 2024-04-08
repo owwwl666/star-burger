@@ -50,7 +50,7 @@ git clone https://github.com/devmanorg/star-burger.git
 
 Перейдите в каталог проекта:
 ```sh
-cd star-burger
+cd star-burger/backend/
 ```
 
 [Установите Python](https://www.python.org/), если этого ещё не сделали.
@@ -78,7 +78,7 @@ python -m venv venv
 pip install -r requirements.txt
 ```
 
-Определите переменную. Создать файл `.env` в каталоге `/star_burger/` и положите туда такой код:
+Определите переменную. Создать файл `.env` в каталоге `star_burger/` и положите туда такой код:
 ```sh
 DEBUG=True
 SECRET_KEY - секретный ключ Django проекта
@@ -122,10 +122,10 @@ npm --version
 
 Версия `nodejs` должна быть не младше `10.0` и не старше `16.16`. Лучше ставьте `16.16.0`, её мы тестировали. Версия `npm` не важна. Как обновить Node.js читайте в статье: [How to Update Node.js](https://phoenixnap.com/kb/update-node-js-version).
 
-Перейдите в каталог проекта и установите пакеты Node.js:
+Перейдите в каталог и установите пакеты Node.js:
 
 ```sh
-cd star-burger
+cd star-burger/frontend
 npm ci --dev
 ```
 
@@ -182,12 +182,12 @@ DB_URL=DB_URL=postgres://USER:PASSWORD@postgresql:5432/DB_NAME
 Соберите образы для фронтенда и бэкенда, выполнив следующие команды в терминале:
 
 ```
-docker build -t frontend ./nginx/
+docker build -t front ./nginx/
 ```
 
 
 ```
-docker build -t backend .
+docker build -t back -f backend/Dockerfile .
 ```
 
 Запустите команду docker-compose, чтобы собрать проект:
