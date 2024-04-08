@@ -6,7 +6,7 @@ from environs import Env
 env = Env()
 env.read_env()
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 SECRET_KEY = env("SECRET_KEY")
@@ -72,7 +72,7 @@ TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [
-            os.path.join(BASE_DIR, "backend/templates"),
+            os.path.join(BASE_DIR, "templates"),
         ],
         "APP_DIRS": True,
         "OPTIONS": {
@@ -129,6 +129,7 @@ STATIC_URL = "/static/"
 INTERNAL_IPS = ["127.0.0.1"]
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "backend/assets"),
-    os.path.join(BASE_DIR, "frontend/bundles"),
+    os.path.join(BASE_DIR, "assets"),
+    os.path.join(BASE_DIR, "bundles"),
 ]
+print(BASE_DIR)
